@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="login" content="HTML, CSS, JavaScript">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+         *{
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          .container{
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            position: relative;
+            text-align: center;
+            background: linear-gradient(
+              60deg,
+              rgba(84, 58, 183, 1) 0%,
+              rgba(0, 172, 193, 1) 100%
+            );
+            color: white;
+          }
+          .form{
+            max-width: 430px;
+            width: 100%;
+            padding: 30px;
+            background: #fff;
+            border-radius: 6px;
+          }
+          header{
+            font-size: 28px;
+            font-weight: 600;
+            color: #232836;
+            text-align: center;
+          }
+          form{
+            margin-top: 30px;
+          }
+          form .field{
+            height: 45px;
+            width: 100%;
+            margin-top: 20px;
+            position: relative;
+          }
+          .field input , .field button{
+            height: 100%;
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            font-weight: 400;
+            border-radius: 6px;
+          }
+          .field input{
+            border: 1px solid #cacaca;
+            padding:  0 15px;
+            outline: none;
+          }
+          .field input:focus{
+            border-bottom-width: 2px;
+          }
+          .field button{
+            background-color: #0171d3;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.3 ease;
+          }
+          .field button:hover{
+            background-color: #016dcb;
+            cursor: pointer;
+            color: #fff;
+          }
+          .eye-icon{
+            font-size: 18px;
+            color: #8b8b8b;
+            position: absolute;
+            top:  50%;
+            right: 10px;
+            transform:  translateY(-50%);
+            cursor: pointer;
+            padding: 5px;
+          }
+          .line{
+            height: 1px;
+            width: 100%;
+            position: relative;
+            background-color: #d4d4d4;
+            margin: 36px 0;
+          }
+          .line::before{
+            content: 'Ou';
+            position: absolute;
+            top: -900%;
+            right: 50%;
+            transform: translate(-50% -50%);
+            background: #fff;
+            color: #232836;
+            padding: 0 15px;
+          }
+          .media-option{
+            display: flex;
+            border: 1px solid #cacaca;
+            align-items: center;
+            justify-content: center;
+          }
+          a .google-img{
+            height: 20px;
+            width: 20px;
+            object-fit: cover;
+            position: absolute;
+            top: 10px;
+            transform: translateY(-50%);
+          }
+        </style>
+    </head>
+    <body>
+      <div class"header">
+        <section class="container froms">
+            <div class="form login">
+                <div class="form-content">
+                    <header>connexion</header>
+
+                    <form id="login-form" >
+                        <div class="field input-field">
+                            <input type="text" class="email" placeholder="Nom d'utilisateur,email" required=""
+                            name="username" id="username" >
+                        </div>
+                        <div class="field input-field">
+                            <input type="password" class="password" placeholder="Mot de passe" required=""
+                            id="password" name="password"  >
+                        </div>
+                        <div class="field button-field">
+                          <button type="submit" id="submit">Se connecter</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+      </div>
+    </body>
+    <script>
+fetch('http://localhost:8000/api/check')
+  .then(response => {
+    if (response.ok) {
+      // API connectée, rediriger l'utilisateur vers la page d'accueil
+      window.location.href = '/api/pagecommande';
+    } else {
+      // API non connectée, afficher un message d'erreur
+      console.log('Erreur de connexion à l\'API');
+    }
+  })
+  .catch(error => {
+    // Erreur lors de la requête Fetch
+    console.log('Erreur de connexion à l\'API : ' + error);
+  });
+      const form = document.getElementById("login-form");
+
+form.addEventListener("submit", event => {
+event.preventDefault();
+
+const requestData = {
+username: form.elements.username.value,
+password: form.elements.password.value
+};
+
+fetch("/api/adminlogin", {
+method: "POST",
+headers: {
+  "Content-Type": "application/json"
+},
+body: JSON.stringify(requestData)
+})
+.then(response => {
+  if (response.ok) {
+    window.location.href = "/api/pagehome";
+    return response.json();
+  }
+  else if (response.status ===403){
+    alert("Nom d'utilisateur ou mot de passe incorrect")
+  }
+  throw new Error("Authentication failed");
+})
+.then(data => {
+  // Handle the successful authentication
+  console.log("Authentication successful:", data);
+})
+.catch(error => {
+  // Handle the authentication failure
+  console.error("Authentication failed:", error);
+});
+});
+    </script>
+</html>

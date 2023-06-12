@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="commande" content="HTML, CSS, JavaScript">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://kit.fontawesome.com/8171e47458.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+    </head>
+    <style>
+      
+      @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500&display=swap');
+       
+       /* Barre de défilement pour les navigateurs WebKit (Safari) */
+::-webkit-scrollbar {
+  width: 12px; /* Largeur de la barre de défilement */
+}
+
+/* Fond de la barre de défilement */
+::-webkit-scrollbar-track {
+  background-color: #f2f2f2;
+}
+
+/* Barre de défilement elle-même */
+::-webkit-scrollbar-thumb {
+  background-color: #c8c8c8;
+  border-radius: 6px; /* Arrondit les bords de la barre de défilement */
+}
+
+/* Barre de défilement au survol */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8a8a8;
+}
+
+/* Barre de défilement pour les navigateurs autres que WebKit (Firefox) */
+body {
+  scrollbar-color: #c8c8c8 #f2f2f2;
+  scrollbar-width: thin;
+}
+
+/* Fond de la barre de défilement pour les navigateurs autres que WebKit (Firefox) */
+body::-webkit-scrollbar-track {
+  background-color: #f2f2f2;
+}
+
+/* Barre de défilement elle-même pour les navigateurs autres que WebKit (Firefox) */
+body::-webkit-scrollbar-thumb {
+  background-color: #c8c8c8;
+}
+
+/* Barre de défilement au survol pour les navigateurs autres que WebKit (Firefox) */
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #a8a8a8;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+}
+
+body{
+  font-family: Montserrat;
+  background: #f3f4fb;
+}
+
+
+
+#choisir-point{
+  background-color :#f08c00;
+}
+
+#submitButton:hover {
+  background-color: #3e8e41;
+}
+#addButton:hover{
+  background-color:#364fc7;
+}
+ 
+
+.wrapper{
+  display: flex;
+  position: relative;
+}
+
+.wrapper .sidebar{
+  width: 200px;
+  height: 100%;
+  background: #4B4E6D;
+  padding: 30px 0px;
+  position: fixed;
+}
+
+.wrapper .sidebar h2{
+  color: #fff;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.wrapper .sidebar ul li{
+  padding: 15px;
+  border-bottom: 1px solid #bdb8d7;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}    
+
+.wrapper .sidebar ul li a{
+  color: #bdb8d7;
+  display: block;
+}
+
+.wrapper .sidebar ul li a .fas{
+  width: 25px;
+}
+
+.wrapper .sidebar ul li:hover{
+  background-color: #594f8d;
+}
+    
+.wrapper .sidebar ul li:hover a{
+  color: #fff;
+}
+ 
+.wrapper .sidebar .social_media{
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+.wrapper .sidebar .social_media a{
+  display: block;
+  width: 40px;
+  background: #594f8d;
+  height: 40px;
+  line-height: 45px;
+  text-align: center;
+  margin: 0 5px;
+  color: #bdb8d7;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.wrapper .main_content{
+  width: 100%;
+  margin-left: 200px;
+  font-family: Montserrat;
+}
+
+.wrapper .main_content .header{
+  padding: 5px;
+  font-family: Montserrat !important;
+  background: #f3f4fb;
+  color: #000;
+  border-bottom: 1px solid #e0e4e8;
+}
+
+.wrapper .main_content .info{
+  margin: 20px;
+  color: #000;
+  line-height: 25px;
+}
+
+.wrapper .main_content .info div{
+  margin-bottom: 20px;
+}
+
+@media (max-height: 500px){
+  .social_media{
+    display: none !important;
+  }
+}
+          .active {
+            backdrop-filter: blur(10px); /* Flou pour l'effet de verre */
+            border-radius: 10px; /* Coins arrondis pour l'élément */
+            padding: 10px; /* Espace à l'intérieur de l'élément */
+            margin: 10px; /* Espace autour de l'élément */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Ombre portée pour l'élément */
+            color: #fff !important;
+            background-color: #594f8d;
+          }
+          .active a{
+            color: #fff !important;
+          }
+       /*   .chart-info-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-items: center;
+}*/
+
+.chart-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  width: 800px;
+}
+.header{
+        font-size:30px;
+       }
+       .header{
+        background-color: #fff!important;
+        line-height: 1.5;
+    text-align: left;
+    font-family: open sans,sans-serif;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    padding: 0;
+    top: 0;
+    width: 100%!important;
+    display: block;
+    box-shadow: 0 0 11px rgba(0,0,0,.13);
+    background: #fff;
+    color: #404e67;
+    z-index: 1028;
+      }
+      .active a{
+        color: #fff !important;
+      }
+          
+    </style>
+    <body>
+      <div class="wrapper">
+        <div class="sidebar">
+            <h2>Essivi</h2>
+            <ul>
+                <li><a href="/api/pagehome"><i class="fas fa-home"></i>Home</a></li>
+                <li><a href="/api/pageclient"><i class="fas fa-address-card"></i>Client</a></li>
+                <li><a href="/api/pagelivreur"><i class="fas fa-solid fa-user"></i>Livreur</a></li>
+                <li><a href="/api/pagestock"><i class='fas bx bx-store-alt'></i>Stock</a></li>
+                <li ><a href="/api/pageproduit"><i class="fas fa-solid fa-bottle-water"></i></i>Produit</a></li>
+                <li><a href="/api/pagecommande"><i class="fas fa-solid fa-cart-shopping"></i></i>Commande</a></li>
+                <li><a href="/api/pagelivraison"><i class="fas fa-regular fa-truck"></i></i>Livraison</a></li>
+                <li class="active"><a href="/api/pagestatistique"><i class='fas bx bx-bar-chart-alt-2'></i>Statistiques</a></li>
+                <br/>
+                <br/>
+                <br/>
+                <li id="logout"><a><i class="fas fa-solid fa-right-from-bracket"></i>Logout</a></li>
+            </ul> 
+        </div>
+        <div class="main_content">
+            <div class="header"> 
+                Statistiques
+              </div>
+            <div class="info">
+              
+                <div class="tabs__body">
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart2"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart3"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart4"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart5"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart6"></canvas>
+                    </div>
+                  </div>
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart7"></canvas>
+                    </div>
+                  </div>
+
+                  <div class="chart-info-container">
+                    <div class="chart-container">
+                      <canvas id="myChart8"></canvas>
+                    </div>
+                  </div>
+
+                </div>
+                    
+             </div>
+        </div>
+    </div>
+    </body>
+    <script>  
+    const logoutButton = document.querySelector('#logout');
+logoutButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  fetch('/api/adminlogout', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' 
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      window.location.href = '/api/';
+    } else {
+      // Erreur lors de la déconnexion, afficher un message d'erreur
+      console.log('Erreur lors de la déconnexion');
+    }
+  })
+  .catch(error => {
+    // Erreur lors de la requête Fetch
+    console.log('Erreur lors de la déconnexion : ' + error);
+  });
+});
+
+fetch('http://localhost:8000/api/tartview')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    var xValues = ["En attente", "Livrée", "Annulée ","En cours", ];
+var yValues = [data[0][1],data[1][1],data[2][1],data[3][1]];
+var barColors = [
+  "#2b5797",
+  "#00aba9",
+  "#b91d47",
+  "#e8c3b9",
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Repartition des commandes"
+    }
+  }
+})
+  });
+
+  fetch('http://localhost:8000/api/conteneur')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    var xValues = ["bouteille", "canette", "sachet " ];
+var yValues = [data[0][1],data[1][1],data[2][1]];
+var barColors = [
+  "#2b5797",
+  "#00aba9",
+  "#b91d47",
+  "#e8c3b9",
+];
+
+new Chart("myChart7", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86,1)' 
+              ],
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Repartition des ventes par conteneur"
+    }
+  }
+})
+  });
+  
+
+fetch('http://localhost:8000/api/venteproduit')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      xValues.push(data[i][0]);
+      yValues.push(data[i][1]);
+    }
+    console.log(xValues);
+    console.log(yValues);
+  
+new Chart("myChart2", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      borderColor: "#3cba9f",
+      backgroundColor: "#71d1bd",
+      borderWidth:2,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition des ventes par produit"
+    }
+  }
+})
+
+});
+
+fetch('http://localhost:8000/api/lastcommande')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      yValues.push(data[i][0]);
+      xValues.push(data[i][1]);
+    }
+    console.log(xValues);
+    console.log(yValues);
+    
+new Chart("myChart3", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      borderColor: "rgb(62,149,205)",
+      backgroundColor: "rgb(62,149,205,0.1)",
+      borderWidth:2,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition des commandes sur les 7 derniers jours"
+    }
+  }
+})
+
+});
+fetch('http://localhost:8000/api/lastlivraison')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      yValues.push(data[i][0]);
+      xValues.push(data[i][1]);
+    }
+    console.log(xValues);
+    console.log(yValues);
+    new Chart("myChart4", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [
+    {
+      borderColor: "rgb(196,88,80)",
+      backgroundColor:"rgb(196,88,80,0.1)",
+      borderWidth:2,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition des  livraisons sur les 7 derniers jours"
+    }
+  }
+})
+});
+
+fetch('http://localhost:8000/api/livreuracte')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      xValues.push(data[i][0]);
+      yValues.push(data[i][1]);
+    }
+    console.log(xValues);
+    console.log(yValues);
+  
+new Chart("myChart5", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      borderColor: "rgb(255,165,0)",
+      backgroundColor:"rgb(255,165,0,0.1)",
+      borderWidth:2,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition des livreur par commande effectuées"
+    }
+  }
+})
+
+});
+fetch('http://localhost:8000/api/chiffreaffairesemaine')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+var zValues=[];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      yValues.push(data[i][0]);
+      xValues.push(data[i][1]);
+      zValues.push('100000')
+    }
+    console.log(xValues);
+    console.log(yValues);
+    new Chart("myChart6", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [
+    {
+      borderColor: "rgb(60,186,159)",
+      backgroundColor: "rgb(60,186,159,0.1)",
+      borderWidth:2,
+      data: yValues,
+    },
+  {
+    borderColor: "#c45850",
+    backgroundColor:"rgb(196,88,80,0.1)",
+    borderWidth:2,
+    data:zValues , 
+  }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition du chiffre d'affaire sur les sept derniers jours"
+    }
+  }
+})
+});
+
+fetch('http://localhost:8000/api/client')
+  .then(response => response.json())
+  .then(data => {
+    var xValues = [];
+var yValues = [];
+    console.log(data);
+    for (var i = 0; i < data.length; i++) {
+      xValues.push(data[i][0]);
+      yValues.push(data[i][1]);
+    }
+    console.log(xValues);
+    console.log(yValues);
+  
+new Chart("myChart8", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      borderColor:'rgba(54, 162, 235, 1)',
+      backgroundColor:'rgba(54, 162, 235, 0.2)',
+      borderWidth:2,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    },
+    title: {
+      display: true,
+      text: "Répartition des client par montant d'achats"
+    }
+  }
+})
+
+});
+    </script>
+</html>

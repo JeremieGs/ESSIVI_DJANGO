@@ -1,0 +1,252 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <!-- google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- My Style -->
+    <link rel="stylesheet" href={% static 'style1.css' %}>
+</head>
+<style>
+  @media print {
+    body * {
+    visibility: hidden;
+  }
+  #main, #main * {
+    visibility: visible;
+  }
+  #action {
+    display: none;
+  }
+}
+.etat-paiement {
+ 
+}
+
+.libelle {
+  margin-right: 10px;font-weight: bold;
+  color: rgb(28, 26, 26);
+}
+
+.valeur {
+  padding: 5px 10px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.valeur.payer {
+  background-color: rgb(134, 244, 134);
+  color: white;
+}
+
+.valeur.non-payer {
+  background-color: rgb(227, 78, 78);
+  color: white;
+}
+</style>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="text">Facture</span> 
+        </div>
+    </div>
+    <div class="main-content" id="main">
+        <div class="invoice-container" id ="invoice-container">
+            <div class="top">
+                <div class="top-left">
+                    <h1 class="main">Facture</h1>
+                    <span class="code" id="code">#</span>
+                </div>
+                <div class="top-right">
+                    <div class="date"id="date">Date:</div>
+                    <div class="date" id="emission">Date emission:</div>
+                </div>
+            </div>
+            <div class="bill-box">
+                <div class="left">
+                  <div class="etat-paiement" id="masque">
+                    <span class="libelle">État de paiement :</span>
+                    <span class="valeur">payer</span>
+                  </div>
+                    <div class="text-m">ESSIVI SARL</div>
+                    <div class="text-m">Boutique</div>
+                    <div class="addr">Lome,TOGO</div>
+                </div>
+                <div class="right">
+                  <div id="masque">
+                    <br>
+                    <br>
+                  </div>
+                    <div class="text-m">FACTURE A:</div>
+                    <div class="text-m" id="name"></div>
+                    <div class="addr">lome,TOGO</div>
+                </div>
+            </div>
+            <div class="table-bill">
+                <table class="table-service">
+                    <thead>
+                        <th>PRODUIT</th>
+                        <th class="quantity">QUANTITE</th>
+                        <th class="cost">PRIX</th>
+                    </thead>
+                    <tbody id="tbody">
+                    <tfoot>
+                        <tr class="total">
+                            <td class="name" >Total</td>
+                            <td colspan="2" class="number" id="total"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="note">
+                <p>Merci pour votre fidélité !</p>
+                <p>Essivi.sarl</p>
+            </div>
+            <div class="actions" id="action">
+              <button class="btn btn-main" id="imprimer">Imprimer</button>
+              <button class="btn btn-main" id="payer">Payer</button>
+          </div>
+        </div>
+    </div>
+</body>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+            const id = {{ id }};
+            const Id = urlParams.get('id');
+            const data = {"id":Id}; 
+    async function fetchfacture() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = {{ id }};
+            const Id = urlParams.get('id');
+            const url = 'http://localhost:8000/api/detailscommande';
+            const data = {"id":Id};    
+            const response = await  fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            const commandesData = document.getElementById("tbody");
+            responseData.forEach(client => {
+                console.log(client);
+              const row = `
+              <tr>
+                <td >${client[0]}</td>
+                <td class="quantity">${client[2]}</td>
+                <td class="cost">${client[3]}</td>
+                </tr>
+              `;
+              commandesData.innerHTML += row;
+            });       
+          }
+          
+          fetchfacture();
+          fetch("http://localhost:8000/api/facture", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          })
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              }
+              else if (response.status === 403 || response.status === 401) {
+                window.location.href = "/api/";
+              }
+              throw new Error("Could not fetch data");
+            })
+            .then(data => {
+              console.log(data[0])
+              if(data[0]===undefined){
+                const body = document.getElementById("invoice-container");
+                body.innerHTML = "LA FACTURE DE CETTE COMMANDE N'EST PAS ENCORE DISPONIBLE";
+              }
+              const code = document.getElementById("code");
+              const date = document.getElementById("emission");
+              const today = document.getElementById("date");
+              const total = document.getElementById("total");
+              const name = document.getElementById("name");
+              const tab = document.getElementById("tbody");
+              let date1 = new Date();
+              let dateLocale = date1.toLocaleString('fr-FR',{
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'});
+                let dateLocale1 = new Date(data[0][6]).toLocaleString('fr-FR',{
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric'});
+              tab.innerHTML +=`
+            <tr>
+              <td>Livraison</td>
+              <td class="quantity">1</td>
+              <td class="cost" id="livraison">${data[0][3]}</td>
+              </tr>
+            `;
+                code.innerHTML += data[0][0];
+                today.innerHTML+= dateLocale;
+                total.innerHTML += data[0][4]+' F CFA';
+                date.innerHTML += dateLocale1;
+                name.innerHTML += data[0][1];
+                const idd=data[0][0]
+                const submitBtn = document.getElementById('payer');
+
+submitBtn.addEventListener('click', function() {
+  const xhr = new XMLHttpRequest();
+  const url = 'http://localhost:8000/api/facturepaye';
+  const data = {
+    id: idd
+  };
+  xhr.open('POST', url, true);
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      alert('facture payée avec succès !');
+      location.reload();
+    } else {
+      alert('Erreur lors de l\'envoi de la requête : ' + xhr.statusText);
+    }
+  };
+  xhr.onerror = function() {
+    alert('Erreur lors de l\'envoi de la requête : ' + xhr.statusText);
+  };
+  xhr.send(JSON.stringify(data));
+});
+                const etatPaiement = document.querySelector('.etat-paiement .valeur');
+const valeur = data[0][5]; // remplacez par la valeur que vous souhaitez afficher
+
+// Modifie la classe CSS en fonction de la valeur
+if (valeur === "payée") {
+  etatPaiement.classList.remove('nonpayée');
+  etatPaiement.classList.add('payer');
+  etatPaiement.textContent = "Payé";
+} else {
+  etatPaiement.classList.remove('payer');
+  etatPaiement.classList.add('non-payer');
+  etatPaiement.textContent = "Non payé";
+}
+                })                       
+            .catch(error => {
+              console.error(error);
+            });
+            const printBtn = document.getElementById('imprimer');
+                printBtn.addEventListener('click', () => {
+                window.print();
+});
+</script>
+</html>
